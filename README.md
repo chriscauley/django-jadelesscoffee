@@ -19,10 +19,12 @@ Installation
 
 `$ pip install git+git://github.com/Nuulogic/django-jadelesscoffee.git`
 
+### Development Mode
+
 Then in your Django application, include this middleware:
 `MIDDLEWARE_CLASSES = (
     ...
-    'jadelesscoffee.django.middleware.JadeLessCoffeeMiddleware'
+    'jadelesscoffee.middleware.JadeLessCoffeeMiddleware'
 )`
 
 Then add a 'src' folder in any of the TEMPLATE_DIRS and STATICFILES_DIRS entries you want to have .jade, .less, or .coffee files in.
@@ -30,4 +32,18 @@ Then add a 'src' folder in any of the TEMPLATE_DIRS and STATICFILES_DIRS entries
 The following commands will run at each request and will only compile files that have changed.
 `jlc --quiet --incremental --output {{TEMPLATE_DIRS}} + '/src' {{TEMPLATE_DIRS}}`
 `jlc --quiet --incremental --output {{STATICFILES_DIRS}} + '/src' {{STATICFILES_DIRS}}`
+
+### Production
+
+Since the JadeLessCoffeeMiddleware runs with every request, it is not production ready. Instead turn off the middleware by removing from `settings.MIDDLEWARE_CLASSES` or adding the following line to your settings:
+
+```python
+JLC_OFFLINE = True
+```
+
+Any time you want to compile jade, less, or coffee files run the jlc management command:
+
+```sh
+$ python manage.py jlc
+```
 
