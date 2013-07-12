@@ -33,7 +33,7 @@ setup(
     url='http://github.com/Nuulogic/django-jadelesscoffee/',
     
     # what to install
-    packages=['jadelesscoffee', 'jadelesscoffee.django'],
+    packages=['jadelesscoffee','jadelesscoffee.middleware'],
     
     # searches and classifications
     keywords='django,jade,less,lesscss,coffeescript,nodejs,node,npm,coffee,jlc,middleware',
