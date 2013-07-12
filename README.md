@@ -22,10 +22,13 @@ Installation
 ### Development Mode
 
 Then in your Django application, include this middleware:
-`MIDDLEWARE_CLASSES = (
+
+```python
+MIDDLEWARE_CLASSES = (
     ...
     'jadelesscoffee.middleware.JadeLessCoffeeMiddleware'
-)`
+)
+```
 
 Then add a 'src' folder in any of the TEMPLATE_DIRS and STATICFILES_DIRS entries you want to have .jade, .less, or .coffee files in.
 
@@ -47,3 +50,4 @@ Any time you want to compile jade, less, or coffee files run the jlc management 
 $ python manage.py jlc
 ```
 
+For production, we recommend running this in a fab script, git/etc hook, or any other place where `python mange.py collectstatic` would be run.
