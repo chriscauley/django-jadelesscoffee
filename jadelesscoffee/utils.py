@@ -6,21 +6,12 @@ import subprocess
 def compile_all():
     #if the JLC_DIRS is set then just do them
     if hasattr(settings, 'JLC_DIRS'):
-        if isinstance(settings.JLC_DIRS, tuple):
-            try:
-                for jlcsource, jlcdestination in settings.JLC_DIRS:
-                    compile_jlc(path.normpath(jlcsource), path.normpath(jlcdestination))
-            except:
-                print("Cannot compile jlc directories. JLC_DIRS should be a tuple of tuples. \ne.g. JLC_DIRS = (\n    ('/path/to/src', '/path/to/'),\n    ('/path/to/other/src', '/path/to/other'),\n)")
-        else:
-            try:
-                jlcsource, jlcdestination = settings.JLC_DIRS
-                compile_jlc(path.normpath(jlcsource), path.normpath(jlcdestination))
-            except:
-                print("Cannot compile jlc directories. JLC_DIRS should be a tuple of tuples. \ne.g. JLC_DIRS = (\n    ('/path/to/src', '/path/to/'),\n    ('/path/to/other/src', '/path/to/other'),\n)")
+        if not isinstance(settings.JLC_DIRS,tuple) or not isinstance(settings.JLC_DIRS[0],tuple):
+            raise ValueError("Cannot compile jlc directories. JLC_DIRS should be a tuple of tuples. \ne.g. JLC_DIRS = (\n    ('/path/to/src', '/path/to/'),\n    ('/path/to/other/src', '/path/to/other'),\n)")
+        for jlcsource, jlcdestination in settings.JLC_DIRS:
+            compile_jlc(path.normpath(jlcsource), path.normpath(jlcdestination))
         return
 
-        
     #for each template directory look for a src dir
     if (isinstance(settings.TEMPLATE_DIRS, tuple)):
         for template_directory in settings.TEMPLATE_DIRS:
