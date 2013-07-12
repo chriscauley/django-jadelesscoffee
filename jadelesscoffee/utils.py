@@ -1,6 +1,7 @@
 from django.conf import settings
 from os import path,system
 import os
+import subprocess
 
 def compile_all():
     #if the JLC_DIRS is set then just do them
@@ -50,4 +51,24 @@ def compile_jlc(source_directory, output_directory):
     #from subprocess import Popen, call, PIPE
     #shell=True is necessary on windows due to jlc being provided by environment variables in node
     #call(['jlc', '--incremental', '--out', output_directory, source_directory], shell=True)#, stdout=PIPE, stderr=PIPE)
-    system('jlc --quiet --incremental --out "%s" "%s"' % (output_directory, source_directory))
+    # os.system('jlc --quiet --incremental --out "%s" "%s"' % (output_directory, source_directory))
+
+    proc = subprocess.Popen("jlc --quiet --incremental --python --out \"%s\" \"%s\"" % (output_directory, source_directory), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    (out, err) = proc.communicate()
+    
+    if len(err) > 0 and err is not None:
+        try:
+            error_object = eval(err)
+            filename = error_object['filename']
+            line_number = error_object['lineNumber']
+            offset = error_object['offset']
+            line = error_object['lineCode']
+            message = 'An error occurred in JadeLessCoffee code.\n%s' % error_object['message']
+        except:
+            filename = ''
+            line_number = 0
+            offset = ''
+            line = ''
+            message = 'An indeterminate error occurred in JadeLessCoffee code.\n%s' % err
+            
+        raise SyntaxError(message, (filename, line_number, offset, line))
