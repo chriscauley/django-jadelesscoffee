@@ -12,9 +12,12 @@ class JadeLessCoffeeMiddleware(object):
         #only run this guy if DEBUG is True
         if settings.DEBUG is not None and settings.DEBUG is False:
             raise django.core.exceptions.MiddlewareNotUsed
-        else:
-            print('JadeLessCoffee compiler will run at every request...\n');
 
-    def process_request(self, request):
-        if self.active:
-            compile_all()
+    def process_response(self, request, response):
+        if not self.active or request.is_ajax():
+            return response
+        if str(response.status_code) in ['404','400','500','302','301','304']:
+            return response
+        print('JadeLessCoffee compiler will run at every request...\n');
+        compile_all()
+        return response
